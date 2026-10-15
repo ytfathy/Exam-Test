@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>العب مع مالك - الدراسات الاجتماعية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Arabic -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            min-height: 100vh;
+        }
+        .bounce-gentle {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .pulse-slow {
+            animation: pulse 2.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.95; transform: scale(1.02); }
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .custom-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .custom-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        .custom-btn:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800 antialiased selection:bg-amber-200">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-lg py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-2.5 rounded-2xl backdrop-blur-sm border border-white/30 text-amber-300 text-2xl">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black tracking-wide">العب مع مالك 🌟</h1>
+                    <p class="text-xs text-blue-100 font-medium">الدراسات الاجتماعية - الصف السادس الابتدائي (الوحدة الأولى)</p>
+                </div>
+            </div>
+            <!-- Dynamic Info Bar (when playing) -->
+            <div id="top-stats" class="hidden flex items-center gap-4 bg-white/10 px-4 py-1.5 rounded-xl border border-white/20">
+                <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-star text-amber-300"></i>
+                    <span id="score-display" class="font-extrabold text-lg">0</span>
+                </div>
+                <div class="h-4 w-px bg-white/30"></div>
+                <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-heart text-red-400"></i>
+                    <span id="lives-display" class="font-extrabold text-lg">3</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-6">
+        <div class="w-full max-w-3xl">
+
+            <!-- STEP 1: Welcome & Name Input Screen -->
+            <div id="screen-welcome" class="bg-white rounded-3xl p-6 md:p-10 card-shadow border border-slate-100 text-center relative overflow-hidden">
+                <!-- Background decorative elements -->
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-100 rounded-full blur-2xl opacity-60"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-100 rounded-full blur-2xl opacity-60"></div>
+
+                <!-- Avatar Malek -->
+                <div class="relative z-10 mb-6 inline-block">
+                    <div class="w-28 h-28 md:w-36 md:h-36 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-full flex items-center justify-center mx-auto shadow-inner border-4 border-white bounce-gentle">
+                        <i class="fa-solid fa-child-reaching text-6xl md:text-7xl text-amber-900"></i>
+                    </div>
+                    <span class="absolute bottom-0 right-0 bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-bold border-2 border-white shadow">صديقكم مالك</span>
+                </div>
+
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">مرحباً بك يا بطل المستقبل! 🚀</h2>
+                <p class="text-slate-600 text-sm md:text-base max-w-md mx-auto mb-6">
+                    جاهز للتحدي في المنهج الجديد لدراسات الصف السادس الابتدائي؟ دعنا نختبر معلوماتك ونجمع النقاط معاً!
+                </p>
+
+                <!-- Name Form -->
+                <div class="max-w-md mx-auto space-y-4">
+                    <div class="text-right">
+                        <label for="student-name" class="block text-xs font-bold text-slate-600 mb-1 mr-1">اكتب اسمك الثلاثي للبدء:</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user text-slate-400 absolute right-4 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" id="student-name" placeholder="مثال: أحمد محمد علي" 
+                                   class="w-full pr-11 pl-4 py-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:border-indigo-500 focus:bg-white focus:outline-none transition font-semibold text-slate-800">
+                        </div>
+                        <p id="name-error" class="text-red-500 text-xs mt-1 mr-1 hidden">لطفاً ادخل اسمك للانتقال إلى اختيار المستوى!</p>
+                    </div>
+
+                    <button onclick="goToDifficulty()" class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-lg rounded-2xl shadow-lg shadow-indigo-200 custom-btn flex items-center justify-center gap-2">
+                        <span>التالي: اختيار المستوى</span>
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+
+                <!-- Lessons Included Tags -->
+                <div class="mt-8 pt-6 border-t border-slate-100 flex flex-wrap justify-center gap-2">
+                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-medium">📌 الدرس 1: مظاهر سطح وطننا العربي</span>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-medium">📌 الدرس 2: العوامل المؤثرة في مناخ الوطن العربي</span>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-medium">📌 الدرس 3: الأقاليم المناخية والنباتية</span>
+                </div>
+            </div>
+
+            <!-- STEP 2: Difficulty Selection Screen -->
+            <div id="screen-difficulty" class="hidden bg-white rounded-3xl p-6 md:p-10 card-shadow border border-slate-100 text-center">
+                <div class="mb-6">
+                    <span id="greeting-player" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full inline-block mb-2">أهلاً بك!</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">اختر مستوى الصعوبة المناسب لك 🎯</h2>
+                    <p class="text-slate-500 text-xs md:text-sm mt-1">كل مستوى يمنحك نقاطاً مختلفة وقدر من التحدي!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                    <!-- Easy Card -->
+                    <button onclick="startGame('easy')" class="group p-5 rounded-2xl border-2 border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 hover:border-emerald-500 transition text-right relative overflow-hidden custom-btn">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-seedling"></i></span>
+                            <span class="text-xs font-black bg-emerald-200 text-emerald-800 px-2.5 py-1 rounded-md">سهل</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-emerald-950 mb-1">المكشوف 🟢</h3>
+                        <p class="text-xs text-emerald-800">أسئلة خيارات مباشرة ومساعدة سهلة. بدون وقت محدد للأسئلة.</p>
+                        <div class="mt-4 text-xs font-bold text-emerald-700 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> +10 نقاط للأسئلة
+                        </div>
+                    </button>
+
+                    <!-- Medium Card -->
+                    <button onclick="startGame('medium')" class="group p-5 rounded-2xl border-2 border-amber-200 bg-amber-50/50 hover:bg-amber-50 hover:border-amber-500 transition text-right relative overflow-hidden custom-btn">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-bolt"></i></span>
+                            <span class="text-xs font-black bg-amber-200 text-amber-800 px-2.5 py-1 rounded-md">متوسط</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-amber-950 mb-1">المغامر 🟡</h3>
+                        <p class="text-xs text-amber-800">تنوع أكبر وتوقيت زمني لكل سؤال (25 ثانية). فرصة للتفكير!</p>
+                        <div class="mt-4 text-xs font-bold text-amber-700 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> +20 نقطة للأسئلة
+                        </div>
+                    </button>
+
+                    <!-- Hard Card -->
+                    <button onclick="startGame('hard')" class="group p-5 rounded-2xl border-2 border-rose-200 bg-rose-50/50 hover:bg-rose-50 hover:border-rose-500 transition text-right relative overflow-hidden custom-btn">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-fire"></i></span>
+                            <span class="text-xs font-black bg-rose-200 text-rose-800 px-2.5 py-1 rounded-md">صعب</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-rose-950 mb-1">الخبير 🔴</h3>
+                        <p class="text-xs text-rose-800">تحدي السرعة (15 ثانية فقط!) ودقة متناهية في اختيار الإجابات الصحيحة.</p>
+                        <div class="mt-4 text-xs font-bold text-rose-700 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> +30 نقطة للأسئلة
+                        </div>
+                    </button>
+                </div>
+
+                <button onclick="backToWelcome()" class="text-slate-500 text-sm font-semibold hover:text-slate-700 flex items-center justify-center gap-2 mx-auto">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>تغيير الاسم</span>
+                </button>
+            </div>
+
+            <!-- STEP 3: Game Screen -->
+            <div id="screen-game" class="hidden bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
+                <!-- Top Question Progress & Timer -->
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <span id="lesson-badge" class="bg-indigo-100 text-indigo-800 text-xs font-extrabold px-3 py-1 rounded-lg">الدرس الأول</span>
+                        <span id="question-count" class="text-xs font-bold text-slate-500">سؤال 1 من 10</span>
+                    </div>
+
+                    <!-- Timer Widget -->
+                    <div id="timer-box" class="flex items-center gap-2 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded-full text-xs font-bold">
+                        <i class="fa-regular fa-clock text-amber-500"></i>
+                        <span id="timer-seconds">--</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-100 h-2.5 rounded-full mb-6 overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full w-0 transition-all duration-300"></div>
+                </div>
+
+                <!-- Malek Dialogue / Question Area -->
+                <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-5 mb-6 flex items-start gap-4">
+                    <div class="w-12 h-12 bg-amber-400 rounded-2xl flex-shrink-0 flex items-center justify-center text-amber-900 font-bold text-xl shadow-sm border border-amber-200">
+                        👦🏻
+                    </div>
+                    <div>
+                        <div class="text-xs font-extrabold text-indigo-700 mb-1">مالك يسألك:</div>
+                        <h3 id="question-text" class="text-base md:text-xl font-black text-slate-800 leading-relaxed">
+                            جاري تحميل السؤال...
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Options List -->
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-6">
+                    <!-- Dynamic Answer Options inserted here -->
+                </div>
+
+                <!-- Feedback Message Container -->
+                <div id="feedback-area" class="hidden rounded-2xl p-4 mb-4 text-center text-sm font-extrabold flex items-center justify-center gap-2">
+                    <span id="feedback-icon" class="text-xl"></span>
+                    <span id="feedback-text"></span>
+                </div>
+
+                <!-- Next Question Button -->
+                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base rounded-2xl shadow-md custom-btn flex items-center justify-center gap-2">
+                    <span>السؤال التالي</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <!-- STEP 4: Results & Summary Screen -->
+            <div id="screen-result" class="hidden bg-white rounded-3xl p-6 md:p-10 card-shadow border border-slate-100 text-center relative overflow-hidden">
+                <div class="relative z-10">
+                    <!-- Trophy Icon -->
+                    <div class="w-24 h-24 bg-gradient-to-tr from-amber-300 to-yellow-400 text-amber-900 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg text-5xl">
+                        🏆
+                    </div>
+
+                    <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-1">أحسنت يا بطل! 🎉</h2>
+                    <p id="result-subtitle" class="text-slate-600 text-sm mb-6">لقد أكملت جميع الأسئلة بنجاح!</p>
+
+                    <!-- Certificate Box -->
+                    <div class="bg-gradient-to-b from-amber-50 to-orange-50/30 border-2 border-amber-200 rounded-3xl p-6 mb-6 max-w-lg mx-auto text-right relative">
+                        <div class="text-center border-b border-amber-200/60 pb-3 mb-4">
+                            <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">شهادة تفوق واستحقاق</span>
+                            <h3 class="text-xl font-extrabold text-amber-950 mt-1">وسام مستكشف جغرافيا الوطن العربي</h3>
+                        </div>
+
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <p><strong>اسم الطالب/ـة:</strong> <span id="res-student-name" class="text-indigo-700 font-extrabold">--</span></p>
+                            <p><strong>مستوى التحدي:</strong> <span id="res-difficulty" class="font-bold">--</span></p>
+                            <p><strong>النتيجة الإجمالية:</strong> <span id="res-score" class="text-emerald-700 font-black text-lg">--</span> نقطة</p>
+                            <p><strong>نسبة النجاح:</strong> <span id="res-percentage" class="font-bold">-- %</span></p>
+                            <p><strong>التقييم:</strong> <span id="res-evaluation" class="font-bold text-indigo-800">--</span></p>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-amber-200/60 flex justify-between items-center text-xs text-amber-800 font-bold">
+                            <span>صديقك: مالك 👦🏻</span>
+                            <span>الصف السادس الابتدائي</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col md:flex-row gap-3 max-w-lg mx-auto">
+                        <button onclick="restartGame()" class="flex-1 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl custom-btn flex items-center justify-center gap-2 shadow-md">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>اللعب مرة أخرى</span>
+                        </button>
+                        <button onclick="changeDifficulty()" class="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl custom-btn flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span>تغيير المستوى</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 font-medium">
+        لعبة تفاعلية لمادة الدراسات الاجتماعية للصف السادس الابتدائي - المنهج الجديد ©
+    </footer>
+
+    <!-- Audio & Game Engine -->
+    <script>
+        // Full Question Bank Extracted From Summary Images (150 Questions)
+        const fullQuestionBank = {
+            easy: [
+                { lesson: "الدرس 1", text: "يقع الوطن العربي وسط قارات العالم القديم.", options: ["صواب", "خطأ"], correct: 0, explanation: "يقع الوطن العربي وسط قارات العالم القديم (آسيا وإفريقيا وأوروبا)." },
+                { lesson: "الدرس 1", text: "تبلغ مساحة الوطن العربي نحو .......... مليون كم².", options: ["13", "15", "10", "20"], correct: 0, explanation: "تبلغ مساحة الوطن العربي نحو 13 مليون كم²." },
+                { lesson: "الدرس 1", text: "يقع مضيق جبل طارق تحت إشراف دولة ..........", options: ["المغرب", "مصر", "عُمان", "اليمن"], correct: 0, explanation: "تشرف دولة المغرب على مضيق جبل طارق." },
+                { lesson: "الدرس 1", text: "تمتد أراضي الوطن العربي في قارتي إفريقيا وآسيا.", options: ["صواب", "خطأ"], correct: 0, explanation: "تمتد أراضيه في القارتين الإفريقية والآسيوية." },
+                { lesson: "الدرس 1", text: "عدد الدول العربية في الجناح الآسيوي .......... دولة.", options: ["12", "10", "22", "14"], correct: 0, explanation: "يوجد 12 دولة في الجناح الآسيوي و10 دول في الجناح الإفريقي." },
+                { lesson: "الدرس 3", text: "تنخفض درجات الحرارة كلما .......... عن دائرة الاستواء.", options: ["ابتعدنا", "اقتربنا", "ارتفعنا", "انخفضنا"], correct: 0, explanation: "تنخفض الحرارة كلما ابتعدنا شمالاً أو جنوباً عن دائرة الاستواء." },
+                { lesson: "الدرس 1", text: "أكبر الدول العربية مساحة هي دولة البحرين.", options: ["صواب", "خطأ (الجزائر)", "خطأ (السعودية)", "خطأ (مصر)"], correct: 1, explanation: "أكبر الدول العربية مساحة هي الجزائر وتقع بالجناح الإفريقي." },
+                { lesson: "الدرس 1", text: "يحد الوطن العربي غرباً المحيط ..........", options: ["الأطلنطي", "الهندي", "الهادئ", "القطبي"], correct: 0, explanation: "المحيط الأطلنطي يشكل الحدود الغربية للوطن العربي." },
+                { lesson: "الدرس 2", text: "تعد جبال الأطلس من الجبال الانكسارية.", options: ["صواب", "خطأ (التوائية)", "خطأ (بركانية)", "خطأ (فيضية)"], correct: 1, explanation: "جبال أطلس هي جبال التوائية في الجناح الإفريقي." },
+                { lesson: "الدرس 2", text: "تعتبر واحة سيوة من الواحات الموجودة في دولة ..........", options: ["مصر", "الجزائر", "السعودية", "ليبيا"], correct: 0, explanation: "واحة سيوة تقع في مصر بفعل المياه الجوفية." },
+                { lesson: "الدرس 1", text: "تعتمد الملاحة في قناة السويس على إشراف دولة ..........", options: ["مصر", "السودان", "جيبوتي", "تونس"], correct: 0, explanation: "قناة السويس تتحكم بها دولة مصر." },
+                { lesson: "الدرس 2", text: "تتميز السهول الفيضية بخصوبة تربتها وتركز السكان مثل سهول نهر النيل.", options: ["صواب", "خطأ"], correct: 0, explanation: "السهول الفيضية تربتها خصبة وصالحة للزراعة وتركز السكان." },
+                { lesson: "الدرس 1", text: "يحد الوطن العربي شمالاً البحر المتوسط وجبال ..........", options: ["طوروس", "زاجروس", "كردستان", "عُمان"], correct: 0, explanation: "يحد الوطن العربي شمالاً البحر المتوسط وجبال طوروس." },
+                { lesson: "الدرس 2", text: "أصل تكون بحر الرمال العظيم بين مصر وليبيا هو التعرية المائية.", options: ["صواب", "خطأ (تعرية هوائية)"], correct: 1, explanation: "الكثبان الرملية وبحر الرمال العظيم نتجا عن التعرية الهوائية." },
+                { lesson: "الدرس 1", text: "توجد كنيسة المهد في دولة ..........", options: ["فلسطين", "مصر", "السعودية", "لبنان"], correct: 0, explanation: "كنيسة المهد والمسجد الأقصى يقعان في دولة فلسطين." },
+                { lesson: "الدرس 3", text: "يقع إقليم مناخ البحر المتوسط في الجزء الجنوبي من الوطن العربي.", options: ["صواب", "خطأ (الأجزاء الشمالية)"], correct: 1, explanation: "يقع إقليم البحر المتوسط في الأجزاء الشمالية من الوطن العربي." },
+                { lesson: "الدرس 3", text: "تنمو الغابات المدارية وحشائش السافانا في الإقليم ..........", options: ["المداري", "الصحراوي", "البحر المتوسط", "القطبي"], correct: 0, explanation: "حشائش السافانا والغابات المدارية تنمو في الإقليم المداري." },
+                { lesson: "الدرس 1", text: "مضيق هرمز تشرف عليه دولة ..........", options: ["عُمان", "اليمن", "المغرب", "مصر"], correct: 0, explanation: "تشرف دولة عُمان على مضيق هرمز." },
+                { lesson: "الدرس 1", text: "جبال زاجروس وكردستان تحد الوطن العربي من جهة ..........", options: ["الشرق", "الغرب", "الشمال", "الجنوب"], correct: 0, explanation: "تشكل جبال زاجروس وكردستان الحدود الشرقية للوطن العربي." },
+                { lesson: "الدرس 1", text: "أصغر دولة عربية مساحة هي دولة الجزائر.", options: ["صواب", "خطأ (البحرين)"], correct: 1, explanation: "أصغر الدول العربية مساحة هي دولة البحرين بالآسيوي." },
+                { lesson: "الدرس 3", text: "تنخفض الحرارة بمعدل درجة واحدة كلما ارتفعنا .......... متراً عن البحر.", options: ["150", "100", "200", "500"], correct: 0, explanation: "تنخفض درجة الحرارة 1°م كلما ارتفعنا 150 متراً." },
+                { lesson: "الدرس 3", text: "تتميز المناطق البعيدة عن المسطحات المائية بمناخ قاري شديد الحرارة صيفاً وشديد البرودة شتاءً.", options: ["صواب", "خطأ"], correct: 0, explanation: "المناخ القاري يسود المناطق البعيدة عن تأثير البحار." },
+                { lesson: "الدرس 2", text: "الجبال الانكسارية نشأت نتيجة حدوث انكسارات في القشرة الأرضية.", options: ["صواب", "خطأ"], correct: 0, explanation: "الجبال الانكسارية ناتجة عن انكسارات بالقشرة الأرضية." },
+                { lesson: "الدرس 3", text: "يقع الإقليم الصحراوي بين إقليم البحر المتوسط شمالاً والإقليم المداري جنوباً.", options: ["صواب", "خطأ"], correct: 0, explanation: "يمتد الإقليم الصحراوي بين إقليم البحر المتوسط والمداري." },
+                { lesson: "الدرس 3", text: "يستخرج الصمغ العربي من أشجار ..........", options: ["الصنط", "الأرز", "الزيتون", "النخيل"], correct: 0, explanation: "يستخرج الصمغ العربي من أشجار الصنط بالإقليم المداري." },
+                { lesson: "الدرس 2", text: "سهول البحر الأحمر والخليج العربي غنية بالثروات المعدنية ومصادر الطاقة.", options: ["صواب", "خطأ"], correct: 0, explanation: "تتميز سهول البحر الأحمر والخليج العربي بالمعادن ومصادر الطاقة." },
+                { lesson: "الدرس 1", text: "يقع المسجد الأقصى وبيت الله الحرام في دولة واحدة.", options: ["صواب", "خطأ"], correct: 1, explanation: "الأقصى في فلسطين، وبيت الله الحرام بالسعودية." },
+                { lesson: "الدرس 2", text: "من العوامل الباطنية لتشكيل سطح الأرض التعرية المائية.", options: ["صواب", "خطأ (عوامل سطحية)"], correct: 1, explanation: "التعرية المائية من العوامل السطحية وليست الباطنية." },
+                { lesson: "الدرس 3", text: "تعيش الزرافات والأفيال في حشائش الاستباس.", options: ["صواب", "خطأ (حشائش السافانا)"], correct: 1, explanation: "تعيش الأفيال والزراف والأسود في حشائش السافانا بالمداري." },
+                { lesson: "الدرس 1", text: "يحد الوطن العربي جنوباً المحيط الهندي وبحر العرب والصحراء الكبرى.", options: ["صواب", "خطأ"], correct: 0, explanation: "تعد هذه هي الحدود الجنوبية للوطن العربي." },
+                { lesson: "الدرس 1", text: "نشأت الحضارة المصرية القديمة على أرض الوطن العربي.", options: ["صواب", "خطأ"], correct: 0, explanation: "قامت الحضارات القديمة كالمصرية والبابليّة واليمنية على أراضيه." },
+                { lesson: "الدرس 2", text: "الكثبان الرملية تكونت بفعل التعرية المائية.", options: ["صواب", "خطأ (تعرية هوائية)"], correct: 1, explanation: "الكثبان الرملية تتكون عن طريق التعرية الهوائية (الرياح)." },
+                { lesson: "الدرس 3", text: "تربى الأغنام والماعز على حشائش الاستباس بإقليم البحر المتوسط.", options: ["صواب", "خطأ"], correct: 0, explanation: "حشائش الاستباس مرعى طبيعي للماكز والأغنام." },
+                { lesson: "الدرس 1", text: "يحد الوطن العربي شرقاً خليج عمان والخليج العربي وجبال زاجروس وكردستان.", options: ["صواب", "خطأ"], correct: 0, explanation: "هذه تشكل الحدود الشرقية بالكامل." },
+                { lesson: "الدرس 2", text: "وادي العلاقي يوجد في دولة ..........", options: ["مصر", "السعودية", "الجزائر", "المغرب"], correct: 0, explanation: "وادي العلاقي من الأودية الجافة المشهورة بمصر." },
+                { lesson: "الدرس 1", text: "عدد دول الجناح الإفريقي بالوطن العربي يساوي .......... دول.", options: ["10", "12", "15", "8"], correct: 0, explanation: "تضم إفريقيا 10 دول عربية." },
+                { lesson: "الدرس 2", text: "من أمثلة الأودية الجافة في السعودية وادي ..........", options: ["الدواسر", "العلاقي", "النيل", "دانا"], correct: 0, explanation: "وادي الدواسر من الأودية الجافة بالسعودية." },
+                { lesson: "الدرس 1", text: "الوطن العربي مهبط للديانات السماوية الثلاث (اليهودية - المسيحية - الإسلام).", options: ["صواب", "خطأ"], correct: 0, explanation: "هذه أهميته الدينية العظيمة." },
+                { lesson: "الدرس 3", text: "تنمو النباتات الشوكية والأعشاب القصيرة في الإقليم ..........", options: ["الصحراوي", "المداري", "البحر المتوسط", "القطبي"], correct: 0, explanation: "تنمو النباتات الشوكية في الإقليم الصحراوي حسب المطر." },
+                { lesson: "الدرس 1", text: "مضيق باب المندب تشرف عليه دولتا اليمن وجيبوتي.", options: ["صواب", "خطأ"], correct: 0, explanation: "باب المندب تحت إشراف عربي خالص (اليمن وجيبوتي)." },
+                { lesson: "الدرس 2", text: "هضبة إفريقيا الشمالية توجد في الجناح الآسيوي.", options: ["صواب", "خطأ (الجناح الإفريقي)"], correct: 1, explanation: "هضبة إفريقيا الشمالية هي أكبر هضاب الجناح الإفريقي." },
+                { lesson: "الدرس 2", text: "السهول الساحلية للبحر المتوسط تتميز بأمطارها الشتوية وصلاحيتها للزراعة.", options: ["صواب", "خطأ"], correct: 0, explanation: "تتميز سهول البحر المتوسط بصلاحيتها للزراعة اعتماداً على الأمطار." },
+                { lesson: "الدرس 2", text: "جبال الحجاز وعسير من الجبال الانكسارية في الجناح الآسيوي.", options: ["صواب", "خطأ"], correct: 0, explanation: "جبال الحجاز وعسير ومرتفعات اليمن جبال انكسارية آسيوية." },
+                { lesson: "الدرس 3", text: "تنمو أشجار الأرز والزيتون في إقليم البحر المتوسط.", options: ["صواب", "خطأ"], correct: 0, explanation: "أشجار الأرز والزيتون والبلوط الإبريزي من نباتات البحر المتوسط." },
+                { lesson: "الدرس 1", text: "تتركز معظم مساحة اليابسة للوطن العربي في قارة ..........", options: ["إفريقيا", "آسيا", "أوروبا", "أمريكا"], correct: 0, explanation: "تتركز معظم المساحة في الجناح الإفريقي." },
+                { lesson: "الدرس 1", text: "تتحكم الممرات المائية في زيادة أهمية الوطن العربي الاستراتيجية.", options: ["صواب", "خطأ"], correct: 0, explanation: "الممرات زادت من أهميته وقيمته وقت السلم والحرب." },
+                { lesson: "الدرس 3", text: "سفوح الجبال المواجهة للرياح المحملة ببخار الماء تكون أقل مطراً من الداخلية.", options: ["صواب", "خطأ (أغزر مطراً)"], correct: 1, explanation: "السفوح المواجهة تكون أشد وأغزر مطراً من السفوح الداخلية." },
+                { lesson: "الدرس 2", text: "واحة عين صالح تقع في دولة ..........", options: ["الجزائر", "مصر", "ليبيا", "تونس"], correct: 0, explanation: "واحة عين صالح تقع في دولة الجزائر." },
+                { lesson: "الدرس 3", text: "يعيش في الإقليم الصحراوي حيوانات مثل الزواحف والغزلان والإبل.", options: ["صواب", "خطأ"], correct: 0, explanation: "هذه الحيوانات تتحمل الجفاف والبيئة الصحراوية." },
+                { lesson: "الدرس 3", text: "تنوع المناخ في الوطن العربي يساعد على تحقيق التكامل بين الدول العربية.", options: ["صواب", "خطأ"], correct: 0, explanation: "تنوع المناخ أدى لتنوع المحاصيل وتكامل الدول." }
+            ],
+            medium: [
+                { lesson: "الدرس 1", text: "الممر المائي الذي تسيطر عليه دولة مصر بالكامل هو ..........", options: ["قناة السويس", "مضيق هرمز", "مضيق باب المندب", "مضيق جبل طارق"], correct: 0, explanation: "قناة السويس ممر مائي مصري خالص." },
+                { lesson: "الدرس 1", text: "من القارات التي يقع الوطن العربي وسطها قارة ..........", options: ["أوروبا", "أستراليا", "أمريكا الشمالية", "أمريكا الجنوبية"], correct: 0, explanation: "آسيا وإفريقيا وأوروبا هي قارات العالم القديم." },
+                { lesson: "الدرس 2", text: "السهول الصحراوية تتكون نتيجة نحت وإرساب ..........", options: ["الرياح (التعرية الهوائية)", "المياه (التعرية المائية)", "البراكين", "الالتواءات"], correct: 0, explanation: "تتشكل السهول الصحراوية بفعل التعرية الهوائية." },
+                { lesson: "الدرس 2", text: "جبال البحر الأحمر في مصر والسودان هي جبال ..........", options: ["انكسارية", "التوائية", "بركانية", "رسوبية"], correct: 0, explanation: "جبال البحر الأحمر انكسارية الجناح الإفريقي." },
+                { lesson: "الدرس 2", text: "هضبة بادية الشام تقع في الجناح ..........", options: ["الآسيوي", "الإفريقي", "الأوروبي", "الجنوبي"], correct: 0, explanation: "بادية الشام ونجد وحضرموت بالآسيوي." },
+                { lesson: "الدرس 3", text: "تسقط الأمطار في إقليم البحر المتوسط أساساً في فصل ..........", options: ["الشتاء", "الصيف", "الربيع", "الخريف"], correct: 0, explanation: "مناخ البحر المتوسط حار جاف صيفاً دافئ ممطر شتاءً." },
+                { lesson: "الدرس 1", text: "المضيق الذي تشرف عليه دولتان عربيتان هما اليمن وجيبوتي هو مضيق ..........", options: ["باب المندب", "هرمز", "جبل طارق", "قناة السويس"], correct: 0, explanation: "مضيق باب المندب عربي خالص." },
+                { lesson: "الدرس 2", text: "من الجبال الانكسارية بآسيا جبال الحجاز و مرتفعات اليمن وجبال ..........", options: ["عسير", "أطلس", "عُمان", "زاجروس"], correct: 0, explanation: "الحجاز وعسير ومرتفعات اليمن جبال انكسارية." },
+                { lesson: "الدرس 2", text: "بحر الرمال العظيم يقع بين دولتي .......... وليبيـا.", options: ["مصر", "الجزائر", "السودان", "تونس"], correct: 0, explanation: "بحر الرمال العظيم بين مصر وليبيا." },
+                { lesson: "الدرس 3", text: "الإقليم المناخي الذي تتميز خصائصه بأمطار صيفية وجفاف شتاءً هو الإقليم ..........", options: ["المداري", "البحر المتوسط", "الصحراوي", "الاستوائي"], correct: 0, explanation: "المداري حرارة وأمطار صيفاً وجفاف شتاءً." },
+                { lesson: "الدرس 1", text: "نسبة عدد الدول العربية في إفريقيا إلى مجموع دول الوطن العربي هي ..........", options: ["10 من 22", "12 من 22", "8 من 20", "15 من 22"], correct: 0, explanation: "10 دول في إفريقيا و12 دولة في آسيا." },
+                { lesson: "الدرس 2", text: "تحدث التعرية المائية نتيجة حركة ..........", options: ["الأنهار والبحار", "الرياح والعواصف", "الانكسارات", "الرحلات"], correct: 0, explanation: "التعرية المائية تنشأ عن نحت ونقل الأنهار والبحار للمواد." },
+                { lesson: "الدرس 3", text: "تنمو حشائش الاستباس في جنوب إقليم البحر المتوسط وهي حشائش ..........", options: ["معتدلة", "حارة", "باردة جداً", "شوكية"], correct: 0, explanation: "حشائش الاستباس حشائش معتدلة تزهر شتاءً." },
+                { lesson: "الدرس 2", text: "من فوائد الأودية الجافة استخدامها كـ ..........", options: ["طرق للمواصلات واستخراج المياه الجوفية", "موانئ طبيعية", "مناطق صيد الأسماك", "زراعة الغابات"], correct: 0, explanation: "تستغل الأودية الجافة كطرق ومصادر مياه جوفية." },
+                { lesson: "الدرس 1", text: "تقع الحضارة الميزوبوتامية (حضارة بلاد العراق القديم) في الجناح ..........", options: ["الآسيوي", "الإفريقي", "الأوروبي", "الاستوائي"], correct: 0, explanation: "حضارة العراق قامت في الجناح الآسيوي." },
+                { lesson: "الدرس 3", text: "يمثل الإقليم الصحراوي الحار من مساحة الوطن العربي حوالي أكثر من ..........", options: ["80%", "50%", "30%", "95%"], correct: 0, explanation: "يشغل أكثر من 80% من المساحة الكلية." },
+                { lesson: "الدرس 3", text: "تنمو حشائش الاستباس بالقرب من إقليم مناخ ..........", options: ["البحر المتوسط", "المداري", "الاستوائي", "القطبي"], correct: 0, explanation: "الاستباس تنمو في إقليم البحر المتوسط." },
+                { lesson: "الدرس 1", text: "الحدود الشرقية للوطن العربي تضم جبال زاجروس و جبال ..........", options: ["كردستان", "طوروس", "أطلس", "عسير"], correct: 0, explanation: "جبال زاجروس وكردستان يحدانه شرقاً." },
+                { lesson: "الدرس 2", text: "جبال عُمان وجبال زاجروس وجبال أطلس تعد جبالاً ..........", options: ["التوائية", "انكسارية", "بركانية", "صناعية"], correct: 0, explanation: "هي جبال التوائية ناتجة عن حركات باطنية." },
+                { lesson: "الدرس 1", text: "يوجد بيت الله الحرام والكعبة المشرفة في دولة ..........", options: ["السعودية", "فلسطين", "مصر", "العراق"], correct: 0, explanation: "يقع المسجد الحرام بالمملكة العربية السعودية." },
+                { lesson: "الدرس 2", text: "الحركات الباطنية التي تؤدي لتكون سلاسل جبلية مرتفعة تسمى ..........", options: ["الالتواءات", "التعرية المائية", "التعرية الهوائية", "الانكسارات الضئيلة"], correct: 0, explanation: "الالتواءات ناتجة عن حركات باطنية ضخمة." },
+                { lesson: "الدرس 2", text: "تتميز السهول الساحلية المطلة على البحر الأحمر والخليج العربي بغناها بـ ..........", options: ["الثروات المعدنية ومصادر الطاقة", "التربة الخصبة للزراعة فقط", "المحيطات", "الغابات الكثيفة"], correct: 0, explanation: "غنية بالمعادن كالحديد والبترول ومصادر الطاقة." },
+                { lesson: "الدرس 3", text: "يمتد الإقليم الصحراوي جنوب إقليم ..........", options: ["البحر المتوسط", "المداري", "الاستوائي", "القطبي"], correct: 0, explanation: "يمتد جنوب البحر المتوسط وشمال المداري." },
+                { lesson: "الدرس 3", text: "المناطق القريبة من المسطحات المائية تتميز بـ ..........", options: ["مناخ معتدل", "مناخ قاري شديد الحرارة", "ثلوج دائمية", "جفاف تام"], correct: 0, explanation: "المسطحات المائية تلطف درجات الحرارة." },
+                { lesson: "الدرس 3", text: "يسود الجفاف في فصل الشتاء في الإقليم ..........", options: ["المداري", "البحر المتوسط", "القطبي", "الاستوائي"], correct: 0, explanation: "الإقليم المداري أمطاره صيفية وشتاؤه جاف." },
+                { lesson: "الدرس 2", text: "أكثر مظاهر السطح انتشاراً بالوطن العربي هي ..........", options: ["الهضاب", "الجبال", "السهول الفيضية", "الأودية"], correct: 0, explanation: "الهضاب هي الأكثر انتشاراً على سطح الوطن العربي." },
+                { lesson: "الدرس 2", text: "تقع سلاسل جبال أطلس في الجناح ..........", options: ["الإفريقي", "الآسيوي", "الأوروبي", "الأمريكي"], correct: 0, explanation: "تقع جبال أطلس شمال غرب الجناح الإفريقي." },
+                { lesson: "الدرس 2", text: "الهضبة الممتدة من البحر الأحمر شرقاً للأطلنطي غرباً هي هضبة ..........", options: ["إفريقيا الشمالية", "بادية الشام", "نجد", "حضرموت"], correct: 0, explanation: "هضبة إفريقيا الشمالية هي الأكبر مساحة." },
+                { lesson: "الدرس 3", text: "النباتات التي لها قدرة على تحمل الجفاف مثل الصبار والشوكي تنمو بالإقليم ..........", options: ["الصحراوي", "المداري", "البحر المتوسط", "الاستوائي"], correct: 0, explanation: "النباتات الشوكية تنمو بالإقليم الصحراوي." },
+                { lesson: "الدرس 2", text: "تقع هضبة نجد في .......... شبه الجزيرة العربية.", options: ["وسط", "شمال", "جنوب", "غرب"], correct: 0, explanation: "بادية الشام شمالاً، نجد وسطاً، حضرموت جنوباً." },
+                { lesson: "الدرس 3", text: "إذا ارتفعنا 300 متراً عن مستوى البحر، تنخفض الحرارة بمقدار ..........", options: ["2 درجة مئوية", "1 درجة مئوية", "3 درجات", "5 درجات"], correct: 0, explanation: "كل 150m تنخفض 1°م، إذن 300m تنخفض 2°م." },
+                { lesson: "الدرس 1", text: "حضارة بلاد اليمن القديمة قامت في الجناح ..........", options: ["الآسيوي", "الإفريقي", "الأوروبي", "الأسترالي"], correct: 0, explanation: "اليمن تقع في الجناح الآسيوي." },
+                { lesson: "الدرس 3", text: "تعتبر حشائش السافانا بمثابة حديقة حيوان طبيعية لأن بها ..........", options: ["حيوانات آكلة للعشب وآكلة للُحوم", "حيوانات قطبية فقط", "أسماك متنوعة", "زواحف فقط"], correct: 0, explanation: "يعيش بها الزراف والأفيال (عشب) والأسود والنمور (لحوم)." },
+                { lesson: "الدرس 2", text: "تتكون السهول الفيضية عن طريق ..........", options: ["ترسيب الأنهار للمواد المعلقة", "نحت الرياح للصخور", "الانكسارات الجيولوجية", "حركة الأمواج"], correct: 0, explanation: "الأنهار ترسب طمي النيل وتكون سهولاً خصبة." },
+                { lesson: "الدرس 3", text: "تسقط أمطار تضاريسية غزيرة على سفوح الجبال .......... للرياح.", options: ["المواجهة", "الداخلية", "الموازية", "البعيدة"], correct: 0, explanation: "اصطدام الرياح المحملة بالبخار بالسطح المواجه يسبب أمطاراً غزيرة." },
+                { lesson: "الدرس 3", text: "يمر جنوب الوطن العربي خط رئيسي هو ..........", options: ["دائرة الاستواء", "مدار الجدي", "الدائرة القطبية", "خط غرينتش"], correct: 0, explanation: "تمر دائرة الاستواء في أقصى جنوب الوطن العربي." },
+                { lesson: "الدرس 2", text: "وادي العلاقي في مصر كان يجري به الماء قديماً ويسمى ..........", options: ["وادياً جافاً", "سهلاً فيضياً", "واحة", "كثيباً رملياً"], correct: 0, explanation: "الأودية الجافة كانت مجاري مائية ثم جفت." },
+                { lesson: "الدرس 2", text: "حدوث انكسار في القشرة الأرضية يؤدي إلى .......... الصخور.", options: ["ارتفاع بعضها وانخفاض الآخر", "التوائها دون كسرها", "تحولها لرمال ناعمة", "ذوبانها بالكامل"], correct: 0, explanation: "ترتفع أجزاء مكونة جبالاً وتنخفض أخرى مكونة بحاراً أو منخفضات." },
+                { lesson: "الدرس 3", text: "تساعد الحرارة المعتدلة شتاءً بالوطن العربي على تنشيط حركة ..........", options: ["السياحة البيئية", "التعدين فقط", "الصيد القطبي", "قطع الأشجار"], correct: 0, explanation: "تنوع المناخ والطقس المعتدل ينشط السياحة." },
+                { lesson: "الدرس 1", text: "المضيق الذي يصل بين الخليج العربي وخليج عمان هو مضيق ..........", options: ["هرمز", "باب المندب", "جبل طارق", "تيران"], correct: 0, explanation: "مضيق هرمز يشرف عليه عُمان وإيران." },
+                { lesson: "الدرس 1", text: "المحيط الذي يحد الوطن العربي من جهة الجنوب هو المحيط ..........", options: ["الهندي", "الأطلنطي", "الهادئ", "المنجمد الشمالي"], correct: 0, explanation: "المحيط الهندي يحده جنوباً." },
+                { lesson: "الدرس 2", text: "تعتمد الزراعة في الواحات مثل واحة عين صالح وسيوة على ..........", options: ["المياه الجوفية (الآبار والعيون)", "مياه الأمطار الشديدة", "مياه الأنهار فقط", "تحلية مياه البحر"], correct: 0, explanation: "الواحات تقوم على المياه الجوفية الباطنية." },
+                { lesson: "الدرس 3", text: "يتميز الإقليم الصحراوي بـ .......... الحراري الكبير بين النهار والليل.", options: ["المدى", "الضغط", "المطر", "النبات"], correct: 0, explanation: "الفرق كبير بين حرارة النهار شديدة الارتفاع والليل الشديد البرودة." },
+                { lesson: "الدرس 1", text: "الأهمية الحضارية للوطن العربي ترجع لـ .......... على أرضه.", options: ["قيام الحضارات القديمة", "وجود النفط فقط", "كثرة الأودية", "مساحته الصغيرة"], correct: 0, explanation: "قيام الحضارات القديمة كالمصرية وبابل واليمن." },
+                { lesson: "الدرس 3", text: "شجرة الأرز اتخذتها دولة .......... شعاراً لها.", options: ["لبنان", "مصر", "السعودية", "تونس"], correct: 0, explanation: "شجرة الأرز تتوسط علم دولة لبنان." },
+                { lesson: "الدرس 2", text: "تتشكل دلتاوات الأنهار بفعل التعرية ..........", options: ["المائية", "الهوائية", "البركانية", "الذاتية"], correct: 0, explanation: "ترسيب الأنهار للمواد المعلقة ينتج دلتاوات وسهولاً." },
+                { lesson: "الدرس 1", text: "يربط مضيق جبل طارق بين البحر المتوسط و ..........", options: ["المحيط الأطلنطي", "المحيط الهندي", "البحر الأحمر", "الخليج العربي"], correct: 0, explanation: "جبل طارق يربط البحر المتوسط بالمحيط الأطلنطي." },
+                { lesson: "الدرس 2", text: "تكونت السهول الساحلية للبحر المتوسط وتتميز بـ ..........", options: ["سقوط الأمطار الشتوية وخاصية الزراعة", "وجود البترول فقط", "شدة الجفاف", "الرمال المتحركة"], correct: 0, explanation: "سهول البحر المتوسط صالحة للزراعة على المطر." },
+                { lesson: "الدرس 3", text: "تزداد الحرارة كلما اتجهنا جنوباً بالوطن العربي بسبب الاقتراب من ..........", options: ["دائرة الاستواء", "مدار السرطان", "البحر المتوسط", "جبال طوروس"], correct: 0, explanation: "التعامد الشمسي بالقرب من دائرة الاستواء يرفع الحرارة." },
+                { lesson: "الدرس 1", text: "الأهمية الاقتصادية للوطن العربي تنوع الموارد بسبب ..........", options: ["اتساع مساحته وتنوع أقاليمه المناخية", "صغر مساحته", "قلة دوله", "تشابه مناخه"], correct: 0, explanation: "اتساع المساحة وتنوع الأقاليم زادا من تنوع ثرواته." }
+            ],
+            hard: [
+                { lesson: "الدرس 3", text: "إذا كانت الحرارة عند مستوى سطح البحر 20°م، فكم تكون فوق جبل ارتفاعه 1500م؟", options: ["10°م", "15°م", "5°م", "0°م"], correct: 0, explanation: "كل 150م تنخفض 1°م، 1500 ÷ 150 = 10 درجات انخفاض. 20 - 10 = 10°م." },
+                { lesson: "الدرس 2", text: "أي من الجبال التالية تكونت بسبب الحركات الالتوائية؟", options: ["جبال أطلس وجبال زاجروس", "جبال البحر الأحمر وجبال الحجاز", "جبال عسير ومرتفعات اليمن", "جبال البحر الأحمر وسلاسل الشام"], correct: 0, explanation: "أطلس، زاجروس، كردستان، وعُمان جبال التوائية." },
+                { lesson: "الدرس 3", text: "لماذا تسمى أجزاء الجبال الداخلية بـ (ظلال المطر)؟", options: ["لأن الرياح المحملة بالبخار تفقد أمطارها على السفوح المواجهة أولاً", "لأن الشمس لا تشرق عليها", "لعدم وجود نباتات بها", "لأنها منخفضة جداً"], correct: 0, explanation: "السفوح المواجهة للرياح تسقط عليها أغزر الأمطار قبل وصولها للداخل." },
+                { lesson: "الدرس 3", text: "يؤدي تنوع المناخ في الوطن العربي مباشرة إلى تنوع ..........", options: ["المحاصيل الزراعية والأنشطة الاقتصادية", "عدد الدول", "الممرات المائية", "مساحة اليابسة"], correct: 0, explanation: "تنوع المناخ يحقق تنوع المحاصيل والتكامل الاقتصادي." },
+                { lesson: "الدرس 2", text: "أي الظواهر التضاريسية التالية نتجت عن التعرية الهوائية؟", options: ["الكثبان الرملية وبحر الرمال العظيم", "سهول وادي النيل", "وادي العلاقي ووادي الدواسر", "جبال البحر الأحمر"], correct: 0, explanation: "التعرية الهوائية بالنحت والإرساب تشكل الكثبان والمنخفضات." },
+                { lesson: "الدرس 3", text: "ما الفرق الأساسي بين موسم أمطار الإقليم المداري وإقليم البحر المتوسط؟", options: ["المداري صيفاً والبحر المتوسط شتاءً", "المداري شتاءً والبحر المتوسط صيفاً", "كلاهما صيفاً", "كلاهما طوال العام"], correct: 0, explanation: "إقليم البحر المتوسط ممطر شتاءً، بينما المداري ممطر صيفاً." },
+                { lesson: "الدرس 2", text: "تؤدي الالتواءات في باطن القشرة الأرضية إلى ..........", options: ["تكون سلاسل جبلية مرتفعة", "تكون أودية جافة فقط", "حدوث زلازل وبركاناً مائية", "تكون سهول ساحلية"], correct: 0, explanation: "الالتواءات تشكل السلاسل الجبلية المرتفعة." },
+                { lesson: "الدرس 1", text: "ما هو الممر المائي الذي يربط بين البحر الأحمر والمحيط الهندي عبر بحر العرب؟", options: ["مضيق باب المندب", "مضيق هرمز", "قناة السويس", "مضيق جبل طارق"], correct: 0, explanation: "مضيق باب المندب يصل البحر الأحمر بـ بحر العرب ثم المحيط الهندي." },
+                { lesson: "الدرس 2", text: "سبب تركز السكان واستقرارهم في مناطق الواحات بالصحاري العربية هو ..........", options: ["وجود المياه الجوفية وقيام الزراعة", "وجود الموانئ البحرية", "اعتدال الحرارة طوال العام", "سقوط الأمطار الشتوية"], correct: 0, explanation: "الواحات تحتوي على آبار وعيون تعتمد عليها الزراعة." },
+                { lesson: "الدرس 2", text: "أي من الآتي يقع في دولة المملكة العربية السعودية؟", options: ["وادي الدواسر وجبال عسير", "وادي العلاقي وجبال أطلس", "واحة عين صالح وجبال زاجروس", "بحر الرمال العظيم"], correct: 0, explanation: "وادي الدواسر وجبال عسير والحجاز بـ السعودية." },
+                { lesson: "الدرس 3", text: "يقع الإقليم المداري في .......... الوطن العربي.", options: ["جنوب", "شمال", "شرق", "وسط"], correct: 0, explanation: "الإقليم المداري يشغل الأجزاء الجنوبية." },
+                { lesson: "الدرس 3", text: "تكون الحرارة أشد ما يمكن بالوطن العربي في الأجزاء الجنوبية بسبب ..........", options: ["الاقتراب من دائرة الاستواء", "الابتعاد عن البحر المتوسط", "وجود الجبال", "قلة النبات الطبيعي"], correct: 0, explanation: "تتعامد أشعة الشمس بالقرب من دائرة الاستواء." },
+                { lesson: "الدرس 2", text: "أي من الجبال التالية يعد جبالاً انكسارية بالوطن العربي؟", options: ["جبال الحجاز ومرتفعات اليمن", "جبال زاجروس وكردستان", "جبال أطلس وعُمان", "جبال طوروس"], correct: 0, explanation: "الحجاز وعسير واليمن والبحر الأحمر جبال انكسارية." },
+                { lesson: "الدرس 1", text: "من الحضارات القديمة التي قامت في الجناح الإفريقي بالوطن العربي ..........", options: ["الحضارة المصرية القديمة (الفرعونية)", "حضارة بلاد الرافدين", "حضارة سبأ وحمير باليمن", "حضارة الفينيقيين"], correct: 0, explanation: "الحضارة المصرية القديمة قامت على نهر النيل بـ إفريقيا." },
+                { lesson: "الدرس 3", text: "كيف يسهم المناخ في تنشيط السياحة بالوطن العربي؟", options: ["بفضل الطقس المعتدل شتاءً مما يجذب السياح", "بسبب برودته الشديدة صيفاً", "بسبب كثرة الثلوج", "من خلال الجفاف التام"], correct: 0, explanation: "دفء واعتدال الطقس شتاءً يجذب السياح للمناطق العربية." },
+                { lesson: "الدرس 2", text: "تستغل سهول الخليج العربي والبحر الأحمر في النشاط ..........", options: ["التعديني واستخراج مصادر الطاقة", "الزراعي المطري الكثيف", "قطع الأشجار الاستوائية", "صيد الحيوانات القطبية"], correct: 0, explanation: "غنية بالمعادن والبترول والغاز الطبيعي." },
+                { lesson: "الدرس 2", text: "تقع واحة عين صالح في دولة الجزائر بينما تقع واحة سيوة في دولة ..........", options: ["مصر", "ليبيا", "تونس", "السودان"], correct: 0, explanation: "سيوة في مصر وعين صالح في الجزائر." },
+                { lesson: "الدرس 2", text: "المقصود بالأودية الجافة هي ..........", options: ["أودية كانت تجري بها المياه قديماً ثم جفت", "مجاري مائية مليئة بالماء دائماً", "منخفضات بالصحراء بها زراعة", "سلاسل جبلية مرتفعة"], correct: 0, explanation: "كانت تجري بها الأمطار قديماً ثم جفت بتغير المناخ." },
+                { lesson: "الدرس 1", text: "قناة السويس تصل بين البحر المتوسط و ..........", options: ["البحر الأحمر", "المحيط الأطلنطي", "الخليج العربي", "بحر العرب"], correct: 0, explanation: "تصل بين البحر المتوسط والبحر الأحمر." },
+                { lesson: "الدرس 3", text: "شجرة الصنط لها أهمية اقتصادية كبيرة لأنها مصدر لـ ..........", options: ["الصمغ العربي", "خشب الأرز الممتاز", "زيت الزيتون", "الينسون"], correct: 0, explanation: "يستخرج الصمغ العربي من أشجار الصنط بالمداري." },
+                { lesson: "الدرس 2", text: "حركات باطنية تؤدي لكسر الصخور وارتفاع أجزاء وانخفاض أخرى تسمى ..........", options: ["الانكسارات", "الالتواءات", "التعرية الهوائية", "البركانية"], correct: 0, explanation: "تسمى بالحركات الانكسارية." },
+                { lesson: "الدرس 3", text: "تختلف حشائش السافانا عن الاستباس في أن السافانا ..........", options: ["حشائش حارة وتتدرج في الطول حسب المطر", "حشائش معتدلة قصيرة", "تنمو في الشتاء فقط", "تأكلها الغنام فقط"], correct: 0, explanation: "السافانا حارة وتتدرج أطوالها وتعتبر حديقة حيوان." },
+                { lesson: "الدرس 1", text: "تشمل الحدود الجنوبية للوطن العربي الصحراء الكبرى و المحيط الهندي و ..........", options: ["بحر العرب", "البحر المتوسط", "الخليج العربي", "المحيط الهادئ"], correct: 0, explanation: "بحر العرب والمحيط الهندي والصحراء الكبرى جنوباً." },
+                { lesson: "الدرس 1", text: "زادت الأهمية الاستراتيجية للوطن العربي بسبب ..........", options: ["تحكمه في ممرات ومضايق مائية هامة", "وجود المزارع الكبيرة", "عدم وجود حدود بحرية", "صغر المساحة"], correct: 0, explanation: "تحكمه في قناة السويس ومضايق هرمز وباب المندب وجبل طارق." },
+                { lesson: "الدرس 3", text: "يكون الشتاء شديد البرودة ليلاً بالصحراء بسبب صفة ..........", options: ["المناخ القاري والمدى الحراري الكبير", "تأثير البحار القريبة", "الغطاء النباتي الكثيف", "سقوط الثلوج"], correct: 0, explanation: "المناخ الصحراوي قاري المدى الحراري فيه كبير جداً." },
+                { lesson: "الدرس 2", text: "السهول الصحراوية تتكون بفعل نحت و ترسيب الرياح وتسمى أيضاً بـ ..........", options: ["التعرية الهوائية", "التعرية النهرية", "التعرية الجليدية", "النشاط البركاني"], correct: 0, explanation: "تتكون بفعل التعرية الهوائية." },
+                { lesson: "الدرس 1", text: "أكبر دولة عربية مساحة هي الجزائر بينما أصغر دولة هي .......... وكلاهما بالترتيب في قارتي:", options: ["البحرين (إفريقيا - آسيا)", "البحرين (آسيا - إفريقيا)", "قطر (آسيا - إفريقيا)", "الكويت (آسيا - آسيا)"], correct: 0, explanation: "الجزائر بـ إفريقيا (الكبرى) والبحرين بـ آسيا (الصغرى)." },
+                { lesson: "الدرس 3", text: "صنف النباتات التالية: (الأرز - الأشجار الشوكية - الصنط) حسب أقاليمها بالترتيب:", options: ["بحر متوسط - صحراوي - مداري", "مداري - صحراوي - بحر متوسط", "صحراوي - مداري - بحر متوسط", "بحر متوسط - مداري - صحراوي"], correct: 0, explanation: "الأرز (بحر متوسط)، الشوكية (صحراوي)، الصنط (مداري)." },
+                { lesson: "الدرس 1", text: "القارة التي تضم أكبر عدد من الدول العربية هي قارة .......... بعدد 12 دولة.", options: ["آسيا", "إفريقيا", "أوروبا", "أستراليا"], correct: 0, explanation: "آسيا بها 12 دولة وإفريقيا بها 10 دول." },
+                { lesson: "الدرس 1", text: "تحد جبال طوروس الوطن العربي من جهة ..........", options: ["الشمال", "الشرق", "الجنوب", "الغرب"], correct: 0, explanation: "طوروس والبحر المتوسط يحدانه شمالاً." },
+                { lesson: "الدرس 3", text: "من العوامل المؤثرة في مناخ الوطن العربي: الموقع الفلكي، المسطحات المائية، و ..........", options: ["مظاهر السطح (التضاريس)", "عدد السكان", "النشاط الصناعي", "عدد الدول"], correct: 0, explanation: "مظاهر السطح والارتفاع يؤثران بشكل مباشر." },
+                { lesson: "الدرس 2", text: "قيام الزراعة واستقرار السكان في الواحات يعتمد بالأساس على ..........", options: ["المياه الجوفية (الآبار والعيون)", "أمطار الصيف", "الأنهار الممتدة", "تحلية البحر"], correct: 0, explanation: "المياه الجوفية أساس الحياة بالواحات." },
+                { lesson: "الدرس 3", text: "يسود المناخ المعتدل والممطر شتاءً مع ارتفاع الحرارة صيفاً في إقليم ..........", options: ["البحر المتوسط", "المداري", "الصحراوي", "الاستوائي"], correct: 0, explanation: "هذه خصائص إقليم البحر المتوسط." },
+                { lesson: "الدرس 2", text: "من أسباب تكون السهول الفيضية خصبة التربة هو ..........", options: ["ترسيب الأنهار للمواد المعلقة طوال السنين", "نحت الرياح للجبال", "تراكم الثلوج", "سقوط الأمطار الحامضية"], correct: 0, explanation: "ترسيب طمي الأنهار يعطي تربة فيضية خصبة." },
+                { lesson: "الدرس 1", text: "المضيق الذي يربط بين الخليج العربي وخليج عُمان هو مضيق هرمز وتطل عليه دولة عربية هي ..........", options: ["عُمان", "اليمن", "مصر", "قطر"], correct: 0, explanation: "دولة عُمان تشرف على مضيق هرمز." },
+                { lesson: "الدرس 1", text: "تشرف دولة المغرب على مضيق جبل طارق الذي يربط بين المحيط الأطلنطي و ..........", options: ["البحر المتوسط", "البحر الأحمر", "الخليج العربي", "بحر العرب"], correct: 0, explanation: "جبل طارق يربط الأطلنطي بالبحر المتوسط." },
+                { lesson: "الدرس 3", text: "الصفة المناخية البارزة للإقليم الصحراوي هي ..........", options: ["المدى الحراري الكبير والجفاف المعظم", "الأمطار الدائمة يومياً", "الاعتدال طوال العام نهاراً وليلاً", "الثلوج المستمرة"], correct: 0, explanation: "شديد الحرارة نهاراً صيفاً وشديد البرودة ليلاً شتاءً." },
+                { lesson: "الدرس 2", text: "أي من الآتي يعتبر من الأودية الجافة في مصر التي تستخدم كطرق مواصلات؟", options: ["وادي العلاقي", "وادي الدواسر", "وادي النيل", "وادي الأردن"], correct: 0, explanation: "وادي العلاقي في مصر من الأودية الجافة." },
+                { lesson: "الدرس 3", text: "تنمو الغابات المدارية والأعشاب الطويلة (السافانا) في الأجزاء .......... من الوطن العربي.", options: ["الجنوبية", "الشمالية", "الشرقية", "الغربية"], correct: 0, explanation: "بالأجزاء الجنوبية حيث الإقليم المداري." },
+                { lesson: "الدرس 3", text: "حشائش الاستباس تتميز بأنه يعتمد عليها في مرعى حيواتي لـ ..........", options: ["الأغنام والماعز", "الأفيال والوحوش", "الأسود والنمور", "الدببة والبطريق"], correct: 0, explanation: "تعتبر مراعي طبيعية للأغنام والماعز." },
+                { lesson: "الدرس 3", text: "يشغل الإقليم الصحراوي المساحة الأكبر بالوطن العربي بنسبة تتجاوز ..........", options: ["80%", "20%", "40%", "60%"], correct: 0, explanation: "يشغل أكثر من 80% من المساحة." },
+                { lesson: "الدرس 1", text: "الدولة العربية الآسيوية التي تطل مباشرة وتتحكم بمضيق باب المندب هي ..........", options: ["اليمن", "عُمان", "السعودية", "الإمارات"], correct: 0, explanation: "اليمن بالجناح الآسيوي وجيبوتي بالجناح الإفريقي." },
+                { lesson: "الدرس 2", text: "يوجد وادي الدواسر الجاف في دولة ..........", options: ["المملكة العربية السعودية", "مصر", "الجزائر", "السودان"], correct: 0, explanation: "وادي الدواسر بـ السعودية." },
+                { lesson: "الدرس 3", text: "تنمو حشائش السافانا في الإقليم المداري وتتدرج في الطول حسب ..........", options: ["كمية المطر", "ارتفاع الجبال", "نوع التربة", "درجة الرياح"], correct: 0, explanation: "تتدرج كثافة وطول السافانا بحسب غزوات المطر." },
+                { lesson: "الدرس 2", text: "نشأت جبال البحر الأحمر بـ مصر والسودان نتيجة ..........", options: ["انكسار في القشرة الأرضية", "التواء في الطبقات الرسوبية", "ترسيب نهر النيل", "نحت الرياح"], correct: 0, explanation: "هي جبال انكسارية ناتجة عن انكسار الأرض." },
+                { lesson: "الدرس 1", text: "يشرف الوطن العربي غرباً على المحيط ..........", options: ["الأطلنطي", "الهندي", "الهادئ", "المتوسط"], correct: 0, explanation: "المحيط الأطلنطي يشكل الحدود الغربية." },
+                { lesson: "الدرس 2", text: "الظواهر الناتجة عن التعرية المائية للأنهار هي ..........", options: ["السهول الفيضية والدلتاوات", "الكثبان الرملية", "الجبال الانكسارية", "الهضاب الالتوائية"], correct: 0, explanation: "السهول الفيضية والدلتا تتكون بفعل التعرية المائية." },
+                { lesson: "الدرس 1", text: "تتنوع الموارد الاقتصادية بالوطن العربي بفضل تنوع ..........", options: ["الأقاليم المناخية والنباتية والجيولوجيا", "عدد السكان", "اللغات", "العملات"], correct: 0, explanation: "تنوع الأقاليم المناخية والنباتية والصخور أدى لتنوع الثروات." },
+                { lesson: "الدرس 3", text: "تساعد حالة التنوع المناخي في الوطن العربي على تحقيق .......... بين الدول العربية.", options: ["التكامل والتبادل الاقتصادي", "التنافس والحروب", "التشابه والمماثلة", "الانعزال"], correct: 0, explanation: "تنوع المنتجات الزراعية والموارد يزيد التبادل والتكامل." },
+                { lesson: "الدرس 3", text: "يمتد الإقليم الصحراوي بين إقليمين مناخيين هما .......... شمالاً و.......... جنوباً.", options: ["البحر المتوسط - المداري", "الاستوائي - القطبي", "المداري - البحر المتوسط", "القطبي - الاستوائي"], correct: 0, explanation: "شمالاً إقليم البحر المتوسط وجنوباً الإقليم المداري." }
+            ]
+        };
+
+        // State variables
+        let studentName = "";
+        let currentDifficulty = "easy"; 
+        let filteredQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let lives = 3;
+        let questionPoints = 10;
+        let timer = null;
+        let timeRemaining = 0;
+        let timerMax = 0;
+
+        // Audio Effects using Web Audio API
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.1); 
+                osc.frequency.exponentialRampToValueAtTime(783.99, audioCtx.currentTime + 0.2); 
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.35);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, audioCtx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(130.81, audioCtx.currentTime + 0.2); 
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'click') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            }
+        }
+
+        // Navigation Functions
+        function goToDifficulty() {
+            playSound('click');
+            const nameInput = document.getElementById('student-name');
+            const errorMsg = document.getElementById('name-error');
+
+            if (!nameInput.value.trim()) {
+                errorMsg.classList.remove('hidden');
+                nameInput.focus();
+                return;
+            }
+
+            errorMsg.classList.add('hidden');
+            studentName = nameInput.value.trim();
+
+            document.getElementById('greeting-player').textContent = `أهلاً بك يا بطل: ${studentName} 👋`;
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-difficulty').classList.remove('hidden');
+        }
+
+        function backToWelcome() {
+            playSound('click');
+            document.getElementById('screen-difficulty').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+
+        function startGame(difficulty) {
+            playSound('click');
+            currentDifficulty = difficulty;
+
+            // Configure difficulty rules
+            if (difficulty === 'easy') {
+                questionPoints = 10;
+                timerMax = 0; 
+                lives = 5;
+            } else if (difficulty === 'medium') {
+                questionPoints = 20;
+                timerMax = 25; 
+                lives = 3;
+            } else if (difficulty === 'hard') {
+                questionPoints = 30;
+                timerMax = 15; 
+                lives = 2;
+            }
+
+            // Shuffle pool of 50 questions for selected level & select 10 per session
+            const pool = fullQuestionBank[difficulty] || fullQuestionBank['easy'];
+            filteredQuestions = [...pool].sort(() => 0.5 - Math.random()).slice(0, 10);
+            
+            // Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+
+            // UI Adjustments
+            document.getElementById('score-display').textContent = score;
+            document.getElementById('lives-display').textContent = lives;
+            document.getElementById('top-stats').classList.remove('hidden');
+
+            document.getElementById('screen-difficulty').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            // Reset interface
+            clearInterval(timer);
+            const feedbackArea = document.getElementById('feedback-area');
+            const nextBtn = document.getElementById('next-btn');
+            feedbackArea.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+
+            const currentQ = filteredQuestions[currentQuestionIndex];
+
+            // Render details
+            document.getElementById('lesson-badge').textContent = currentQ.lesson;
+            document.getElementById('question-count').textContent = `سؤال ${currentQuestionIndex + 1} من ${filteredQuestions.length}`;
+            document.getElementById('question-text').textContent = currentQ.text;
+
+            // Progress Bar
+            const progressPercent = ((currentQuestionIndex) / filteredQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Options & Shuffling option layout
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            // Create shuffled options with tracking
+            let optionsWithIndex = currentQ.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+            // Shuffle choices so correct answer position varies
+            optionsWithIndex.sort(() => 0.5 - Math.random());
+
+            optionsWithIndex.forEach((item, displayIdx) => {
+                const btn = document.createElement('button');
+                btn.className = `option-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 transition text-right font-bold text-slate-700 flex items-center justify-between custom-btn`;
+                btn.onclick = () => selectAnswer(item.originalIndex, btn);
+                btn.innerHTML = `
+                    <span>${item.text}</span>
+                    <span class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-black">${displayIdx + 1}</span>
+                `;
+                btn.dataset.originalIndex = item.originalIndex;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Timer logic
+            const timerBox = document.getElementById('timer-box');
+            if (timerMax > 0) {
+                timerBox.classList.remove('hidden');
+                timeRemaining = timerMax;
+                document.getElementById('timer-seconds').textContent = `${timeRemaining} ثانية`;
+                
+                timer = setInterval(() => {
+                    timeRemaining--;
+                    document.getElementById('timer-seconds').textContent = `${timeRemaining} ثانية`;
+                    if (timeRemaining <= 0) {
+                        clearInterval(timer);
+                        handleTimeout();
+                    }
+                }, 1000);
+            } else {
+                timerBox.classList.add('hidden');
+            }
+        }
+
+        function handleTimeout() {
+            playSound('wrong');
+            disableOptions();
+            lives--;
+            document.getElementById('lives-display').textContent = lives;
+
+            const currentQ = filteredQuestions[currentQuestionIndex];
+            showFeedback(false, `⏰ انتهى الوقت! الإجابة الصحيحة هي: (${currentQ.options[currentQ.correct]}) - ${currentQ.explanation}`);
+
+            checkGameStatus();
+        }
+
+        function selectAnswer(selectedIndex, clickedBtn) {
+            clearInterval(timer);
+            playSound('click');
+            disableOptions();
+
+            const currentQ = filteredQuestions[currentQuestionIndex];
+            const optionBtns = document.querySelectorAll('.option-btn');
+
+            if (selectedIndex === currentQ.correct) {
+                playSound('correct');
+                score += questionPoints;
+                document.getElementById('score-display').textContent = score;
+
+                clickedBtn.classList.remove('bg-slate-50', 'border-slate-200');
+                clickedBtn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+
+                showFeedback(true, `إجابة صحيحة وممتازة! 🎉 ${currentQ.explanation}`);
+            } else {
+                playSound('wrong');
+                lives--;
+                document.getElementById('lives-display').textContent = lives;
+
+                clickedBtn.classList.remove('bg-slate-50', 'border-slate-200');
+                clickedBtn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+
+                // Highlight correct option
+                optionBtns.forEach(btn => {
+                    if (parseInt(btn.dataset.originalIndex) === currentQ.correct) {
+                        btn.classList.remove('bg-slate-50', 'border-slate-200');
+                        btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                    }
+                });
+
+                showFeedback(false, `إجابة خاطئة! الإجابة الصحيحة هي: (${currentQ.options[currentQ.correct]}) - ${currentQ.explanation}`);
+            }
+
+            checkGameStatus();
+        }
+
+        function disableOptions() {
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('hover:bg-indigo-50', 'custom-btn');
+                b.classList.add('opacity-80', 'cursor-not-allowed');
+            });
+        }
+
+        function showFeedback(isCorrect, message) {
+            const feedbackArea = document.getElementById('feedback-area');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackText = document.getElementById('feedback-text');
+
+            feedbackArea.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200', 'border');
+
+            if (isCorrect) {
+                feedbackArea.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
+                feedbackIcon.textContent = '✅';
+            } else {
+                feedbackArea.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
+                feedbackIcon.textContent = '❌';
+            }
+
+            feedbackText.textContent = message;
+        }
+
+        function checkGameStatus() {
+            const nextBtn = document.getElementById('next-btn');
+
+            if (lives <= 0) {
+                setTimeout(() => {
+                    endGame(false);
+                }, 1800);
+            } else {
+                nextBtn.classList.remove('hidden');
+            }
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            currentQuestionIndex++;
+            if (currentQuestionIndex < filteredQuestions.length) {
+                loadQuestion();
+            } else {
+                endGame(true);
+            }
+        }
+
+        function endGame(completed) {
+            clearInterval(timer);
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            const maxPossibleScore = filteredQuestions.length * questionPoints;
+            const percentage = Math.round((score / maxPossibleScore) * 100);
+
+            document.getElementById('res-student-name').textContent = studentName;
+            
+            let diffLabel = "سهل 🟢";
+            if (currentDifficulty === 'medium') diffLabel = "متوسط 🟡";
+            if (currentDifficulty === 'hard') diffLabel = "صعب 🔴";
+            document.getElementById('res-difficulty').textContent = diffLabel;
+
+            document.getElementById('res-score').textContent = score;
+            document.getElementById('res-percentage').textContent = `${percentage}%`;
+
+            let evaluation = "";
+            const subtitle = document.getElementById('result-subtitle');
+
+            if (percentage >= 90) {
+                evaluation = "ممتاز جداً! خبير جغرافيا الوطن العربي 🌟🏆";
+                subtitle.textContent = "أنت مستكشف رائع ومستعد دائماً للتفوق!";
+            } else if (percentage >= 70) {
+                evaluation = "جيد جداً! مستوى بطل متألق 👏";
+                subtitle.textContent = "أداء قوي! يمكنك الوصول للدرجة النهائية بسهولة المرة القادمة!";
+            } else if (percentage >= 50) {
+                evaluation = "جيد! تحتاج لمراجعة بسيطة للدروس 👍";
+                subtitle.textContent = "محاولة طيبة، راجع ملخص الدروس الثلاثة واعد المحاولة!";
+            } else {
+                evaluation = "حاول مرة أخرى لتحسين مستواك 💡";
+                subtitle.textContent = "راجع بطاقات الملخص بالكامل ثم تحدى صديقك مالك مرة أخرى!";
+            }
+
+            document.getElementById('res-evaluation').textContent = evaluation;
+        }
+
+        function restartGame() {
+            startGame(currentDifficulty);
+        }
+
+        function changeDifficulty() {
+            playSound('click');
+            document.getElementById('top-stats').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-difficulty').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
